@@ -1,0 +1,44 @@
+﻿<Page
+    x:Class="BlueMuse.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BlueMuse"
+    xmlns:vm="using:BlueMuse.ViewModels"
+    xmlns:do="using:BlueMuse.DataObjects"
+    xmlns:h="using:BlueMuse.Helpers"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Height="349.333">
+
+    <Page.Resources>
+        <h:GenericStringFormatter x:Key="GenericStringFormatter" />
+        <h:YesNoValueFormatter x:Key="YesNoValueFormatter" />
+        <h:VisibleWhenZeroConverter x:Key="VisibleWhenZeroConverter" />
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0,0,-22,-28.667">
+        <TextBlock Margin="10,10,104,0" TextWrapping="Wrap" Text="Muses Available" VerticalAlignment="Top" SelectionChanged="TextBlock_SelectionChanged" Style="{StaticResource SubheaderTextBlockStyle}"/>
+        <ListView x:Name="MuseList" Background="LightPink" ItemsSource="{x:Bind ViewModel.Muses, Mode=OneWay}" HorizontalAlignment="Left" Height="279" Margin="10,60,0,0" VerticalAlignment="Top" Width="362" SelectionChanged="ListView_SelectionChanged">
+            <ListView.Header>
+                <StackPanel Visibility="{x:Bind ViewModel.Muses.Count, Mode=OneWay, Converter={StaticResource VisibleWhenZeroConverter}}" Orientation="Horizontal" Margin="6">
+                    <TextBlock Text="Searching for nearby Muses..." />
+                </StackPanel>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="do:Muse">
+                    <StackPanel Orientation="Horizontal" Margin="6">
+                        <SymbolIcon Symbol="People" Margin="-6,0,12,0"/>
+                        <StackPanel>
+                            <TextBlock Text="{x:Bind LongName, Mode=OneWay}"/>
+                            <StackPanel Orientation="Horizontal" Margin="4">
+                                <TextBlock Text="{x:Bind Status, Mode=OneWay, Converter={StaticResource GenericStringFormatter}, ConverterParameter=Status: \{0\}}"/>
+                                <TextBlock Margin="6, 0, 0, 0" Text="{x:Bind IsStreaming, Mode=OneWay, Converter={StaticResource YesNoValueFormatter}, ConverterParameter=Streaming: \{0\}}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Content="Force Refresh" Command="{x:Bind ViewModel.ForceRefresh}" HorizontalAlignment="Left" Margin="261,21,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.647,0.75" Style="{StaticResource AccentButtonStyle}" Width="111" />
+    </Grid>
+</Page>

@@ -1,0 +1,6 @@
+configobj
+future
+psychopy
+
+install psychopy from https://github.com/psychopy/psychopy/
+install Visual C++ 14 http://landinghub.visualstudio.com/visual-cpp-build-tools
