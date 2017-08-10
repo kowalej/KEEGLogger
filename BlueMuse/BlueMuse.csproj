@@ -101,9 +101,11 @@
     <Compile Include="Helpers\Converters.cs" />
     <Compile Include="Helpers\ObservableCollection.cs" />
     <Compile Include="Helpers\ObservableObject.cs" />
+    <Compile Include="LSL\LSL.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MuseBluetooth\MuseBluetoothManager.cs" />
     <Compile Include="ViewModels\MainPageVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -159,6 +161,15 @@
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
+    <None Include="Binaries\liblsl32-debug.dll" />
+    <None Include="Binaries\liblsl32.dll" />
+    <None Include="Binaries\liblsl64-debug.dll" />
+    <None Include="Binaries\liblsl64.dll" />
+    <None Include="Binaries\msvcp90.dll" />
+    <None Include="Binaries\msvcr90.dll" />
+    <Content Include="liblsl32.dll" />
+    <Content Include="msvcp90.dll" />
+    <Content Include="msvcr90.dll" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -183,10 +194,20 @@
       <Version>5.3.4</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="Microsoft.VCLibs, Version=14.0">
+      <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
+    </SDKReference>
+  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
