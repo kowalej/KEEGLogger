@@ -23,13 +23,30 @@ namespace BlueMuse.DataObjects
         public string Id { get { return id; } set { SetProperty(ref id, value); OnPropertyChanged(nameof(MacAddress)); OnPropertyChanged(nameof(LongName)); } }
 
         private MuseConnectionStatus status;
-        public MuseConnectionStatus Status { get { return status; } set { SetProperty(ref status, value); } }
+        public MuseConnectionStatus Status
+        {
+            get { return status; }
+            set
+            {
+                SetProperty(ref status, value);
+                OnPropertyChanged(nameof(CanStream));
+                if (value == MuseConnectionStatus.Offline && isStreaming == true)
+                {
+                    IsStreaming = false;
+                }
+            }
+        }
 
         private bool isStreaming;
         public bool IsStreaming { get { return isStreaming; } set { SetProperty(ref isStreaming, value); } }
 
+        private bool isSelected;
+        public bool IsSelected { get { return isSelected; } set { SetProperty(ref isSelected, value); } }
+
         private int streamingPort;
         public int StreamingPort { get { return streamingPort; } set { SetProperty(ref streamingPort, value); } }
+
+        public bool CanStream { get { return status == MuseConnectionStatus.Online; } }
 
         public string LongName { get { return string.Format("{0} ({1})", Name, MacAddress); } }
 

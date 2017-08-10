@@ -22,7 +22,10 @@ namespace BlueMuse.ViewModels
         public ObservableCollection<Muse> Muses = new ObservableCollection<Muse>();
         private DeviceWatcher museDeviceWatcher;
         private bool museDeviceWatcherReset = false;
-            
+
+        private Muse selectedMuse;
+        public Muse SelectedMuse { get { return selectedMuse; } set { selectedMuse = value;  if(value != null) SetSelectedMuse(value);  } }
+
         public MainPageVM()
         {
             FindMuses();
@@ -45,25 +48,6 @@ namespace BlueMuse.ViewModels
 
             // Start the watcher.
             museDeviceWatcher.Start();
-        }
-
-        private void DeviceWatcher_Stopped(DeviceWatcher sender, object args)
-        {
-            if (museDeviceWatcherReset)
-            {
-                museDeviceWatcherReset = false;
-                museDeviceWatcher.Start();
-            }
-        }
-
-        private void ResetMuseDeviceWatcher()
-        {
-            if (museDeviceWatcher.Status != DeviceWatcherStatus.Stopped && museDeviceWatcher.Status != DeviceWatcherStatus.Stopping)
-            {
-                museDeviceWatcher.Stop();
-                museDeviceWatcherReset = true;
-                Muses.Clear();
-            }
         }
 
         private async void DeviceWatcher_Added(DeviceWatcher sender, DeviceInformation args)
@@ -134,6 +118,25 @@ namespace BlueMuse.ViewModels
             Debug.WriteLine(string.Format("Device: {0} is now {1}.", sender.Name, sender.ConnectionStatus));
         }
 
+        private void ResetMuseDeviceWatcher()
+        {
+            if (museDeviceWatcher.Status != DeviceWatcherStatus.Stopped && museDeviceWatcher.Status != DeviceWatcherStatus.Stopping)
+            {
+                museDeviceWatcher.Stop();
+                museDeviceWatcherReset = true;
+                Muses.Clear();
+            }
+        }
+
+        private void DeviceWatcher_Stopped(DeviceWatcher sender, object args)
+        {
+            if (museDeviceWatcherReset)
+            {
+                museDeviceWatcherReset = false;
+                museDeviceWatcher.Start();
+            }
+        }
+
         private ICommand forceRefresh;
         public ICommand ForceRefresh
         {
@@ -146,21 +149,50 @@ namespace BlueMuse.ViewModels
             }
         }
 
-        async void StreamMuse(Muse muse)
+        private ICommand startStreaming;
+        public ICommand StartStreaming
         {
-            var devices = await DeviceInformation.FindAllAsync("System.Devices.DevObjectType:=5 AND System.Devices.Aep.ProtocolId:=\"{BB7BB05E-5972-42B5-94FC-76EAA7084D49}\"");
-            //if (devices.Count == 0)
-            //    return;
-            //Connect to the service
-            //var service = await GattDeviceService.FromIdAsync(devices[0].Id);
-            //if (service == null)
-            //    return;
-            //Obtain the characteristic we want to interact with
-            //var characteristic = await service.GetCharacteristicsForUuidAsync(BluetoothUuidHelper.FromShortId(0x2A00));
-            //Read the value
-            //var deviceNameBytes = (await characteristic.Characteristics[0].ReadValueAsync()).Value.ToArray();
-            //Convert to string
-            //var deviceName = Encoding.UTF8.GetString(deviceNameBytes, 0, deviceNameBytes.Length);
+            get
+            {
+                return startStreaming ?? (startStreaming = new CommandHandler((param) =>
+                {
+                    StartMuseStreaming(param);
+                }, true)); 
+            }
+        }
+
+        private void StartMuseStreaming(object museId)
+        {
+            var muse = Muses.FirstOrDefault(x => x.Id == (string)museId);
+            muse.IsStreaming = true;
+        }
+
+        private ICommand stopStreaming;
+        public ICommand StopStreaming
+        {
+            get
+            {
+                return stopStreaming ?? (stopStreaming = new CommandHandler((param) =>
+                {
+                    StopMuseStreaming(param);
+                }, true));
+            }
+        }
+
+        private void StopMuseStreaming(object museId)
+        {
+            var muse = Muses.FirstOrDefault(x => x.Id == (string)museId);
+            muse.IsStreaming = false;
+        }
+
+        private void SetSelectedMuse(Muse muse)
+        {
+            var selectedMuses = Muses.Where(x => x.IsSelected);
+            foreach(var selectedMuse in selectedMuses)
+            {
+                selectedMuse.IsSelected = false;
+            }
+            muse.IsSelected = true;
         }
     }
 }

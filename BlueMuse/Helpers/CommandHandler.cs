@@ -9,24 +9,32 @@ namespace BlueMuse.Helpers
 {
     public class CommandHandler : ICommand
     {
-        private Action _action;
-        private bool _canExecute;
+        public event EventHandler CanExecuteChanged;
+        private Action<object> actionWithParam;
+        private Action actionNoParam;
+        private bool canExecute;
+
+        public CommandHandler(Action<object> action, bool canExecute)
+        {
+            actionWithParam = action;
+            this.canExecute = canExecute;
+        }
+
         public CommandHandler(Action action, bool canExecute)
         {
-            _action = action;
-            _canExecute = canExecute;
+            actionNoParam = action;
+            this.canExecute = canExecute;
         }
 
         public bool CanExecute(object parameter)
         {
-            return _canExecute;
+            return canExecute;
         }
 
-        public event EventHandler CanExecuteChanged;
-
-        public void Execute(object parameter)
+        public void Execute(object parameter = null)
         {
-            _action();
+            if (parameter == null) actionNoParam();
+            else actionWithParam(parameter);
         }
     }
 }
