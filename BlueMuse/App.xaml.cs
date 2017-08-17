@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace BlueMuse
@@ -54,7 +49,6 @@ namespace BlueMuse
                 {
                     //TODO: Load state from previously suspended application
                 }
-
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
@@ -68,6 +62,13 @@ namespace BlueMuse
                     // parameter
                     rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
+
+                float DPI = Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi;
+                var desiredSize = new Size(410d, 700d);
+                ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+                ApplicationView.PreferredLaunchViewSize = desiredSize;
+                ApplicationView.GetForCurrentView().SetPreferredMinSize(desiredSize);
+
                 // Ensure the current window is active
                 Window.Current.Activate();
             }

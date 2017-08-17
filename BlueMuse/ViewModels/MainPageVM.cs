@@ -3,6 +3,8 @@ using BlueMuse.DataObjects;
 using System.Linq;
 using System.Windows.Input;
 using BlueMuse.MuseBluetooth;
+using System.Threading;
+using System;
 
 namespace BlueMuse.ViewModels
 {
@@ -15,12 +17,27 @@ namespace BlueMuse.ViewModels
         public ObservableCollection<Muse> Muses;
         private Muse selectedMuse; // Tracks user selection from list.
         public Muse SelectedMuse { get { return selectedMuse; } set { selectedMuse = value; if (value != null) SetSelectedMuse(value); } }
+        private string searchText = string.Empty;
+        public string SearchText { get { return searchText; } set { SetProperty(ref searchText, value); } } 
 
         public MainPageVM()
         {
             museManager = new MuseBluetoothManager();
             Muses = museManager.Muses;
             museManager.FindMuses();
+            new Timer(SearchTextAnimate, null, 0, 600);
+        }
+
+        private void SearchTextAnimate(object state)
+        {
+            string baseText = "Searching for Muses";
+            if (searchText.Count(x => x == '.') == 0)
+                SearchText = baseText + ".";
+            else if (searchText.Count(x => x == '.') == 1)
+                SearchText = baseText + "..";
+            else if (searchText.Count(x => x == '.') == 2)
+                SearchText = baseText + "...";
+            else SearchText = baseText;
         }
 
         private ICommand forceRefresh;

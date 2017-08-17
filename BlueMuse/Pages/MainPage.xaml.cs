@@ -37,15 +37,5 @@ namespace BlueMuse
             this.InitializeComponent();
             this.ViewModel = new ViewModels.MainPageVM();
         }
-
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void TextBlock_SelectionChanged(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using BlueMuse.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Windows.Devices.Bluetooth;
+using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Windows.Foundation;
 
 namespace BlueMuse.DataObjects
 {
@@ -14,8 +14,52 @@ namespace BlueMuse.DataObjects
         Offline = 1
     }
 
+    public class MuseSample
+    {
+        public DateTime[] timeStamps;
+        public DateTime BaseTimeStamp
+        {
+            get
+            {
+                return timeStamps[11];
+            }
+            set
+            {
+                for(int i = 0; i < 12; i++)
+                {
+                    timeStamps[i] = value.AddMilliseconds(-((12 - i) * 4)); // Adjust time considering each samples is 4ms.
+                }
+                timeStamps[11] = value;
+            }
+        }
+        public DateTime[] TimeStamps { get { return timeStamps; } }
+
+        public SortedDictionary<Guid, float[]> ChannelData;
+
+        public MuseSample()
+        {
+            ChannelData = new SortedDictionary<Guid, float[]>();
+            timeStamps = new DateTime[12];
+        }
+    }
+
     public class Muse : ObservableObject
     {
+        public BluetoothLEDevice Device { get; set; }
+        public GattDeviceService DeviceService { get; set; }
+        public Dictionary<UInt16, MuseSample> SampleBuffer { get; set; }
+        public TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs>[] channelEventHandlers;
+        public TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs>[] ChannelEventHandlers
+        {
+            get
+            {
+                if (channelEventHandlers == null)
+                    channelEventHandlers = new TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs>[5];
+                return channelEventHandlers;
+            }
+            set { channelEventHandlers = value; }
+        }
+
         private string name;
         public string Name { get { return name; } set { SetProperty(ref name, value); OnPropertyChanged(nameof(LongName)); } }
 
@@ -63,11 +107,12 @@ namespace BlueMuse.DataObjects
             }
         }
 
-        public Muse(string name, string Id, MuseConnectionStatus status)
+        public Muse(BluetoothLEDevice device, string name, string id, MuseConnectionStatus status)
         {
-            this.Name = name;
-            this.Id = Id;
-            this.Status = status;
+            Device = device;
+            Name = name;
+            Id = id;
+            Status = status;
         }
     }
 }
