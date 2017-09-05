@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>14902558-6f9c-4d90-b3ce-44c5e64f43a2</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>KEEGLogger.py</StartupFile>
+    <StartupFile>EEGSample.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -12,6 +12,7 @@
     <Name>KEEGLogger</Name>
     <RootNamespace>KEEGLogger</RootNamespace>
     <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <IsWindowsApplication>True</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +23,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="EEGSample.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="helpers.py">
       <SubType>Code</SubType>
     </Compile>
@@ -35,7 +39,7 @@
     <Interpreter Include="env\">
       <Id>env</Id>
       <Version>3.6</Version>
-      <Description>env (Anaconda 4.3.0)</Description>
+      <Description>env (Python 3.6 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
