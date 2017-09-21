@@ -8,6 +8,7 @@ import getpass
 import configparser
 import os
 import helpers
+from experiment import Experiment
 from enum import Enum
 
 class Constants(object):
@@ -20,6 +21,7 @@ class Constants(object):
     CONFIG_PASSWORD_PREFIX = 'Password_'
     USERNAME_MIN_LENGTH = 1
     USERNAME_MAX_LENGTH = 10
+    SESSION_ITERATIONS = 30
 
 class PasswordTypes(Enum):
     PIN_FIXED_4 = 1
@@ -29,7 +31,7 @@ class PasswordTypes(Enum):
     def has_value(self, value):
         return (any(value == item.value for item in self))
 
-class Program():
+class Program:
     def __init__(self):
         self.load_default_config()
         parser = argparse.ArgumentParser(
@@ -41,7 +43,7 @@ class Program():
     activateuser   Sets the active user.
     activatemode   Sets the active mode (i.e. password type).
     setpass        Records a new password (note: this is optional and used only for display during prediction).
-    train          Train the model. You will type in words while your data EEG is recorded.
+    train          Train the model. You will type in passwords while your EEG data is recorded.
     predict        You will type a password and the model will predict it based soley on EEG data.
 
     Upon first use just run "startfresh" and follow the step by step instructions.
@@ -84,11 +86,10 @@ class Program():
         parser.add_argument('-a', '--activate', action='store_true', default=True, required=False, help='Set as active user after creation.')
         args = parser.parse_args(sys.argv[2:])
         if not self.validate_username(args.username):
-            print('Cannot create user.')
-            print('Username has incorrect format. It must contain only letters and numbers and {0}.'.format(self.length_msg(Constants.USERNAME_MIN_LENGTH, Constants.USERNAME_MAX_LENGTH)))
+            self.print_cannot_create_user()
             return
         elif self.check_user_exists(args.username):
-            print('User already exists, will activate if -a/--activate was provided.')
+            print('User already exists, will activate if -a or --activate was provided.')
         else: 
             self.create_user(args.username)
             print('User {0} created.'.format(args.username))
@@ -105,7 +106,7 @@ class Program():
             self.print_users()
         else: 
             self.set_active_user(args.username)
-            print('Active user set to: {0}.'.format(args.username))
+            self.print_active_user()
 
     def activatemode(self):
         parser = argparse.ArgumentParser(description='Set active mode.')
@@ -114,7 +115,7 @@ class Program():
         if not PasswordTypes.has_value(args.mode):
             self.print_invalid_mode()
         else: 
-            self.set_active_mode(args.mode)
+            self.set_active_mode(PasswordTypes(args.mode))
             print('Active mode set to {0}.'.format(args.mode))
 
     def setpass(self):
@@ -133,6 +134,11 @@ class Program():
             print('Setting password for user: {0}, password mode: {1}...'.format(username, mode))
             password = self.get_password(mode)
             self.write_password(username, password, mode)
+
+    def train(self):
+        parser = argparse.ArgumentParser(description='Set a new password for active user.')
+        parser.add_argument('-u', '--username', type=str, help='Specific username to set password for. Command defaults to active user.')
+        parser.add_argument('-m', '--mode', type=int, help='Password integer mode number.')
 
     def validate_username(self, username):
         pattern = '^\w{{{0},{1}}}\Z'.format(Constants.USERNAME_MIN_LENGTH, Constants.USERNAME_MAX_LENGTH)
@@ -175,12 +181,22 @@ class Program():
         return PasswordTypes(int(self.read_config().get(Constants.CONFIG_SECTION_GLOBAL, Constants.CONFIG_OPTION_ACTIVE_MODE)))
 
     def set_active_mode(self, mode):
-        self.write_config(Constants.CONFIG_SECTION_GLOBAL, Constants.CONFIG_OPTION_ACTIVE_MODE, mode)
+        self.write_config(Constants.CONFIG_SECTION_GLOBAL, Constants.CONFIG_OPTION_ACTIVE_MODE, mode.value)
 
     def print_users(self):
         users = self.get_user_list()
         print('Total users: {0}'.format(len(users)))
         print(*self.get_user_list(), sep='\n')
+
+    def print_active_user(self):
+        print('Active user set to: {0}.'.format(self.get_active_user()))
+
+    def print_active_mode(self):
+        print('Active mode set to: {0}.'.format(self.get_active_mode()))
+
+    def print_cannot_create_user(self):
+        print('Cannot create user.')
+        print('Username has incorrect format. It must contain only letters and numbers and {0}.'.format(self.length_msg(Constants.USERNAME_MIN_LENGTH, Constants.USERNAME_MAX_LENGTH)))
 
     def print_invalid_mode(self):
         print("Invalid mode specified. See available modes below:")
@@ -239,13 +255,12 @@ class Program():
         helpers.print_dashes()
 
         print('\nStep 1:')
-        print('--------------------------------')
-        print('Enter a username (may contain only letters and numbers and {0}).'.format(self.length_msg(Constants.USERNAME_MIN_LENGTH, Constants.USERNAME_MAX_LENGTH)) + ' Note: if you don\'t want to have your data saved, press enter to skip this step and use the default profile. Your data will not be kept.')
+        helpers.print_dashes()
+        print('Enter a username (may contain only letters and numbers and {0}).'.format(self.length_msg(Constants.USERNAME_MIN_LENGTH, Constants.USERNAME_MAX_LENGTH)) + ' Note: if you don\'t want to have your data saved, press ENTER to skip this step and use the default profile. Your data will not be kept.')
         while True:
             username = input('Enter username: ').strip()
             if not self.validate_username(username):
-                print('Cannot create user.')
-                print('Username has incorrect format. It must contain only letters and numbers and {0}.'.format(self.length_msg(Constants.USERNAME_MIN_LENGTH, Constants.USERNAME_MAX_LENGTH)))
+                self.print_cannot_create_user()
             elif self.check_user_exists(username):
                 ok = input('User: {0} already exists, type "OK" to activate this profile: '.format(username)).strip()
                 if ok.upper() == 'OK': break
@@ -255,22 +270,33 @@ class Program():
                 print('User: {0} created.'.format(username))
                 break
         self.set_active_user(username)
-        print('User: {0} activated.'.format(username))
+        self.print_active_user()
 
         print('\nStep 2:')
-        print('--------------------------------')
-        print('Enter a mode number: Type "1" for Mode 1 - cracking 4-digit pin number. Type "2" for Mode 2 - 8 character password.')
+        helpers.print_dashes()
+        print('Enter a mode number: Enter "1" for Mode 1: cracking 4-digit pin number. Enter "2" for Mode 2: 8 character password (case insensitive).')
         while True:
             modeNumber = input('Enter mode number: ').strip()
             if PasswordTypes.has_value(helpers.safe_cast(modeNumber, int)):
-               self.begin_mode(modeNumber)
                break
             else: 
                 self.print_invalid_mode()
 
-    def begin_mode(self, passType):
-        password = self.get_password(PasswordTypes.PIN)
-        #begin_training(30)
+        modeNumber = PasswordTypes(int(modeNumber))
+        self.set_active_mode(modeNumber)
+        self.print_active_mode()
+        password = self.get_password(modeNumber)
+        self.write_password(username, password, modeNumber)
+
+        print('\nStep 3:')
+        helpers.print_dashes()
+        self.begin_experiment()
+
+    def begin_experiment(self):
+        print('''You are ready to start training. In this session you will be presented with {0} automatically generated passwords.
+Your task is simpy to type each password as it is presented. If you make a mistake do not worry, just keep typing until you hit the correct key. Take  your time and remember to concentrate!'''.format(Constants.SESSION_ITERATIONS))        
+        input('Press any key to begin...')
+        Experiment(self.get_active_user, self.get_active_mode, Constants.SESSION_ITERATIONS)
 
 if __name__ == '__main__':
     Program()
