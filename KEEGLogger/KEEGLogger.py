@@ -9,27 +9,8 @@ import configparser
 import os
 import helpers
 from experiment import Experiment
-from enum import Enum
-
-class Constants(object):
-    CONFIG_FILE_NAME = 'config.ini'
-    DEFAULT_CONFIG_FILE_NAME = 'default_config.ini'
-    CONFIG_SECTION_GLOBAL = 'Global'
-    CONFIG_OPTION_ACTIVE_USER = 'ActiveUser'
-    CONFIG_OPTION_ACTIVE_MODE = 'ActiveMode'
-    CONFIG_USERNAME_PREFIX = 'User_'
-    CONFIG_PASSWORD_PREFIX = 'Password_'
-    USERNAME_MIN_LENGTH = 1
-    USERNAME_MAX_LENGTH = 10
-    SESSION_ITERATIONS = 30
-
-class PasswordTypes(Enum):
-    PIN_FIXED_4 = 1
-    MIXED_FIXED_8 = 2
-    
-    @classmethod
-    def has_value(self, value):
-        return (any(value == item.value for item in self))
+from passwordtypes import PasswordTypes
+from constants import Constants
 
 class Program:
     def __init__(self):
@@ -136,9 +117,9 @@ class Program:
             self.write_password(username, password, mode)
 
     def train(self):
-        parser = argparse.ArgumentParser(description='Set a new password for active user.')
-        parser.add_argument('-u', '--username', type=str, help='Specific username to set password for. Command defaults to active user.')
-        parser.add_argument('-m', '--mode', type=int, help='Password integer mode number.')
+        parser = argparse.ArgumentParser(description='Train the model. You will type in passwords while your EEG data is recorded.')
+        parser.add_argument('-mid', '--museid', type=int, required=False, help='Muse MAC Address. If ommitted, the first available device is used.')
+        self.begin_experiment()
 
     def validate_username(self, username):
         pattern = '^\w{{{0},{1}}}\Z'.format(Constants.USERNAME_MIN_LENGTH, Constants.USERNAME_MAX_LENGTH)
@@ -293,10 +274,12 @@ class Program:
         self.begin_experiment()
 
     def begin_experiment(self):
-        print('''You are ready to start training. In this session you will be presented with {0} automatically generated passwords.
-Your task is simpy to type each password as it is presented. If you make a mistake do not worry, just keep typing until you hit the correct key. Take  your time and remember to concentrate!'''.format(Constants.SESSION_ITERATIONS))        
+        user = self.get_active_user()
+        mode = self.get_active_mode()
+        print('''You are ready to start training {0}. In this session you will be presented with {1} automatically generated passwords.
+Your task is simpy to type each password as it is presented. If you make a mistake do not worry, just keep typing until you hit the correct key. Take  your time and remember to concentrate!'''.format(user, Constants.SESSION_ITERATIONS))        
         input('Press any key to begin...')
-        Experiment(self.get_active_user, self.get_active_mode, Constants.SESSION_ITERATIONS)
+        Experiment(user, mode, Constants.SESSION_ITERATIONS)
 
 if __name__ == '__main__':
     Program()

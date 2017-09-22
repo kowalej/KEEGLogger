@@ -23,6 +23,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="constants.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="EEGInlet.py">
       <SubType>Code</SubType>
     </Compile>
@@ -33,6 +36,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="KEEGLogger.py" />
+    <Compile Include="passwordtypes.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="default_config.ini" />
