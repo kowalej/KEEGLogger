@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>14902558-6f9c-4d90-b3ce-44c5e64f43a2</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>KEEGLogger.py</StartupFile>
+    <StartupFile>keeglogger.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -26,17 +26,22 @@
     <Compile Include="constants.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EEGInlet.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="experiment.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="helpers.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="KEEGLogger.py" />
-    <Compile Include="passwordtypes.py">
+    <Compile Include="keeglogger.py" />
+    <Compile Include="muse-lsl\muse-lsl.py" />
+    <Compile Include="muse-lsl\muse\muse.py" />
+    <Compile Include="muse-lsl\muse\utils.py" />
+    <Compile Include="muse-lsl\muse\__init__.py" />
+    <Compile Include="muse-lsl\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="password_types.py" />
+    <Compile Include="textbox.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -54,6 +59,10 @@
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
       <Architecture>X64</Architecture>
     </Interpreter>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="muse-lsl\" />
+    <Folder Include="muse-lsl\muse\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

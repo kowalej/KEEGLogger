@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import sys
 import getopt
 import argparse
@@ -8,8 +6,11 @@ import getpass
 import configparser
 import os
 import helpers
+import platform
+import subprocess
+import time
 from experiment import Experiment
-from passwordtypes import PasswordTypes
+from password_types import PasswordTypes
 from constants import Constants
 
 class Program:
@@ -59,6 +60,10 @@ class Program:
         parser = argparse.ArgumentParser(description='Runs fresh instance from the start.')
         parser.add_argument('-mid', '--museid', nargs=1, required=False, help='Muse MAC address.')
         args = parser.parse_args(sys.argv[2:])
+        if args.museid:
+            self.museID = args.museid
+        else:
+           self.museID = None
         self.start_fresh_instance()
 
     def createuser(self):
@@ -119,6 +124,11 @@ class Program:
     def train(self):
         parser = argparse.ArgumentParser(description='Train the model. You will type in passwords while your EEG data is recorded.')
         parser.add_argument('-mid', '--museid', type=int, required=False, help='Muse MAC Address. If ommitted, the first available device is used.')
+        args = parser.parse_args(sys.argv[2:])
+        if args.museid:
+            self.museID = args.museid
+        else:
+           self.museID = None
         self.begin_experiment()
 
     def validate_username(self, username):
@@ -278,7 +288,22 @@ class Program:
         mode = self.get_active_mode()
         print('''You are ready to start training {0}. In this session you will be presented with {1} automatically generated passwords.
 Your task is simpy to type each password as it is presented. If you make a mistake do not worry, just keep typing until you hit the correct key. Take  your time and remember to concentrate!'''.format(user, Constants.SESSION_ITERATIONS))        
-        input('Press any key to begin...')
+        
+        print('\nThe system will now launch muse-lsl (Linux) or BlueMuse (Windows) to stream data.')
+        
+        os = platform.platform()
+        if os == "linux" or os == "linux2":
+            if self.museID:
+                subprocess.call('muse-lsl.py -a={0}'.format(self.museID), shell=True)
+            else:
+                subprocess.call('muse-lsl.py', shell=True)
+        else:
+            if self.museID:
+                subprocess.call('start bluemuse://start?addresses='.format(self.museID), shell=True)
+            else:
+                subprocess.call('start bluemuse://start?streamfirst=true'.format(self.museID), shell=True)
+
+        input('\nPress any key to begin...')
         Experiment(user, mode, Constants.SESSION_ITERATIONS)
 
 if __name__ == '__main__':

@@ -1,2 +1,4 @@
 configobj
 pygame
+pylsl
+pygatt
