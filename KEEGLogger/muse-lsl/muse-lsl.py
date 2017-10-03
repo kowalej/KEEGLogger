@@ -54,4 +54,4 @@ while 1:
 
 muse.stop()
 muse.disconnect()
-print('Disonnected')
+print('Disconnected')

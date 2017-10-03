@@ -1,21 +1,23 @@
+#!/usr/bin/python
+
 import sys
 import getopt
 import argparse
 import re
 import getpass
-import configparser
 import os
 import helpers
 import platform
 import subprocess
 import time
-from experiment import Experiment
+import configparser
+from data_collection import DataCollection
 from password_types import PasswordTypes
 from constants import Constants
 
 class Program:
     def __init__(self):
-        self.load_default_config()
+        helpers.load_default_config()
         parser = argparse.ArgumentParser(
             description='KEEGLogger is a demostration of password cracking that uses your brainwave data to infer keystrokes.',
             usage='''KEEGLogger.py <command> [<args>]
@@ -25,14 +27,14 @@ class Program:
     activateuser   Sets the active user.
     activatemode   Sets the active mode (i.e. password type).
     setpass        Records a new password (note: this is optional and used only for display during prediction).
-    train          Train the model. You will type in passwords while your EEG data is recorded.
-    predict        You will type a password and the model will predict it based soley on EEG data.
+    collect        Collect data for the model. You will type in passwords while your EEG data is recorded.
+    predict        You will enter your password and the model will predict it based soley on EEG data.
 
     Upon first use just run "startfresh" and follow the step by step instructions.
 
     Password modes: 
         Mode 1:  4-digit pin number.
-        Mode 2: 8 character password.
+        Mode 2: 8 character password (case insensitive).
         ''')
 
         parser.add_argument('command', help='Command to run.')
@@ -47,14 +49,6 @@ class Program:
 
         # use dispatch pattern to invoke method with same name
         getattr(self, args.command)()
-
-    def load_default_config(self):
-        if not os.path.isfile(Constants.CONFIG_FILE_NAME):
-            config = configparser.ConfigParser()
-            config.read(Constants.DEFAULT_CONFIG_FILE_NAME)
-            cfgfile = open(Constants.CONFIG_FILE_NAME,'w')
-            config.write(cfgfile)
-            cfgfile.close()
 
     def startfresh(self):
         parser = argparse.ArgumentParser(description='Runs fresh instance from the start.')
@@ -121,15 +115,25 @@ class Program:
             password = self.get_password(mode)
             self.write_password(username, password, mode)
 
-    def train(self):
-        parser = argparse.ArgumentParser(description='Train the model. You will type in passwords while your EEG data is recorded.')
+    def collect(self):
+        parser = argparse.ArgumentParser(description='Collect data for the model. You will type in passwords while your EEG data is recorded.')
         parser.add_argument('-mid', '--museid', type=int, required=False, help='Muse MAC Address. If ommitted, the first available device is used.')
         args = parser.parse_args(sys.argv[2:])
         if args.museid:
             self.museID = args.museid
         else:
            self.museID = None
-        self.begin_experiment()
+        self.begin_collection()
+
+    def predict(self):
+        parser = argparse.ArgumentParser(description='You will enter your password and the model will predict it based soley on EEG data.')
+        parser.add_argument('-mid', '--museid', type=int, required=False, help='Muse MAC Address. If ommitted, the first available device is used.')
+        args = parser.parse_args(sys.argv[2:])
+        if args.museid:
+            self.museID = args.museid
+        else:
+           self.museID = None
+        self.begin_prediction()
 
     def validate_username(self, username):
         pattern = '^\w{{{0},{1}}}\Z'.format(Constants.USERNAME_MIN_LENGTH, Constants.USERNAME_MAX_LENGTH)
@@ -137,42 +141,29 @@ class Program:
         return passRegex.match(username)
 
     def create_user(self, username):
-        self.write_config(Constants.CONFIG_USERNAME_PREFIX + username)
-
-    def read_config(self, file = Constants.CONFIG_FILE_NAME):
-        config = configparser.ConfigParser()
-        config.read(file)
-        return config
-
-    def write_config(self, section, option = None, value = None, file = Constants.CONFIG_FILE_NAME):
-        config = configparser.ConfigParser()
-        config.read(file)
-        if not config.has_section(section):
-            config.add_section(section)
-        if not option == None and not value == None:
-            config.set(section, option, str(value))
-        cfgfile = open(Constants.CONFIG_FILE_NAME,'w')
-        config.write(cfgfile)
-        cfgfile.close()
+        helpers.write_config(Constants.CONFIG_USERNAME_PREFIX + username)
 
     def check_user_exists(self, username):
-        return self.read_config().has_section(Constants.CONFIG_USERNAME_PREFIX + username)
+        return helpers.read_config().has_section(Constants.CONFIG_USERNAME_PREFIX + username)
 
     def get_user_list(self):
-        users = list(filter(lambda x: Constants.CONFIG_USERNAME_PREFIX in x, self.read_config().sections()))
+        users = list(filter(lambda x: Constants.CONFIG_USERNAME_PREFIX in x, helpers.read_config().sections()))
         return list(map(lambda x: x.replace(Constants.CONFIG_USERNAME_PREFIX,''), users))
 
     def get_active_user(self):
-        return self.read_config().get(Constants.CONFIG_SECTION_GLOBAL, Constants.CONFIG_OPTION_ACTIVE_USER)
+        return helpers.read_config().get(Constants.CONFIG_SECTION_GLOBAL, Constants.CONFIG_OPTION_ACTIVE_USER)
 
     def set_active_user(self, username):
-        self.write_config(Constants.CONFIG_SECTION_GLOBAL, Constants.CONFIG_OPTION_ACTIVE_USER, username)
+        helpers.write_config(Constants.CONFIG_SECTION_GLOBAL, Constants.CONFIG_OPTION_ACTIVE_USER, username)
 
     def get_active_mode(self):
-        return PasswordTypes(int(self.read_config().get(Constants.CONFIG_SECTION_GLOBAL, Constants.CONFIG_OPTION_ACTIVE_MODE)))
+        return PasswordTypes(int(helpers.read_config().get(Constants.CONFIG_SECTION_GLOBAL, Constants.CONFIG_OPTION_ACTIVE_MODE)))
 
     def set_active_mode(self, mode):
-        self.write_config(Constants.CONFIG_SECTION_GLOBAL, Constants.CONFIG_OPTION_ACTIVE_MODE, mode.value)
+        helpers.write_config(Constants.CONFIG_SECTION_GLOBAL, Constants.CONFIG_OPTION_ACTIVE_MODE, mode.value)
+
+    def get_user_password(self, user, mode):
+        return helpers.read_config().get(Constants.CONFIG_USERNAME_PREFIX + user, Constants.CONFIG_OPTION_PASSWORD_PREFIX + str(mode))
 
     def print_users(self):
         users = self.get_user_list()
@@ -195,7 +186,7 @@ class Program:
             print("Mode: {0} ({1})".format(mode.value, mode))
 
     def write_password(self, username, password, mode):
-        self.write_config(Constants.CONFIG_USERNAME_PREFIX + username, Constants.CONFIG_PASSWORD_PREFIX + str(mode), password)
+        helpers.write_config(Constants.CONFIG_USERNAME_PREFIX + username, Constants.CONFIG_OPTION_PASSWORD_PREFIX + str(mode), password)
         print("Wrote password for user: {0}.".format(username))
 
     def length_msg(self, passMinLength, passMaxLength):
@@ -281,30 +272,60 @@ class Program:
 
         print('\nStep 3:')
         helpers.print_dashes()
-        self.begin_experiment()
+        self.begin_collection()
 
-    def begin_experiment(self):
-        user = self.get_active_user()
-        mode = self.get_active_mode()
-        print('''You are ready to start training {0}. In this session you will be presented with {1} automatically generated passwords.
-Your task is simpy to type each password as it is presented. If you make a mistake do not worry, just keep typing until you hit the correct key. Take  your time and remember to concentrate!'''.format(user, Constants.SESSION_ITERATIONS))        
-        
-        print('\nThe system will now launch muse-lsl (Linux) or BlueMuse (Windows) to stream data.')
-        
+        print('\nStep 4:')
+        helpers.print_dashes()
+        print('''Congratulations, you have finished your data collection session. You can now let the learning model train on your data.
+If you have done many session this process may take a bit of time.''')
+        input('\nPress any key to start...')
+        # Train
+
+    def start_stream(self):
         os = platform.platform()
+        pro = None
         if os == "linux" or os == "linux2":
             if self.museID:
-                subprocess.call('muse-lsl.py -a={0}'.format(self.museID), shell=True)
+                pro = subprocess.Popen('muse-lsl.py -a={0}'.format(self.museID), shell=True)
             else:
-                subprocess.call('muse-lsl.py', shell=True)
+                pro = subprocess.Popen('muse-lsl.py', shell=True)
         else:
             if self.museID:
                 subprocess.call('start bluemuse://start?addresses='.format(self.museID), shell=True)
             else:
                 subprocess.call('start bluemuse://start?streamfirst=true'.format(self.museID), shell=True)
+        return pro
 
+    def stop_stream(self, process):
+        os = platform.platform()
+        if os == "linux" or os == "linux2":
+            if pro:
+                os.killpg(os.getpgid(pro.pid), signal.SIGTERM)
+        else:
+            if self.museID:
+                subprocess.call('start bluemuse://stop?addresses='.format(self.museID), shell=True)
+            else:
+                subprocess.call('start bluemuse://stop?stopall=true'.format(self.museID), shell=True)
+
+    def begin_collection(self):
+        user = self.get_active_user()
+        mode = self.get_active_mode()
+        print('''You are ready to start collecting data {0}. In this session you will be presented with {1} automatically generated "password(s)".
+Your task is to simpy type each password as it is presented. If you make a mistake do not worry, just keep typing until you hit the correct key. Take  your time and remember to concentrate!'''.format(user, Constants.SESSION_ITERATIONS))        
+        print('\nThe system will now launch muse-lsl (Linux) or BlueMuse (Windows) to stream  the data.')
+        self.start_stream()
         input('\nPress any key to begin...')
-        Experiment(user, mode, Constants.SESSION_ITERATIONS)
+        experiment = DataCollection(user, mode, Constants.SESSION_ITERATIONS)
+        pro = experiment.start()
+        self.stop_stream(pro)
+
+    def begin_prediction(self):
+        try:
+            user, password = self.get_active_user(), self.get_active_mode()
+            password = self.get_user_password(self.get_active_user(), PasswordTypes(2))
+            print(password)
+        except configparser.NoOptionError:
+            print('Cannot begin prediction, password not set! User: {0}, Mode: {1}'.format(user, password))
 
 if __name__ == '__main__':
     Program()

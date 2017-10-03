@@ -26,7 +26,7 @@
     <Compile Include="constants.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="experiment.py">
+    <Compile Include="data_collection.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="helpers.py">
@@ -41,6 +41,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="password_types.py" />
+    <Compile Include="prediction.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="textbox.py">
       <SubType>Code</SubType>
     </Compile>
