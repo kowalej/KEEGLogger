@@ -14,6 +14,7 @@ import configparser
 from data_collection import DataCollection
 from password_types import PasswordTypes
 from constants import Constants
+from prediction import Prediction
 
 class Program:
     def __init__(self):
@@ -289,11 +290,14 @@ If you have done many session this process may take a bit of time.''')
                 pro = subprocess.Popen('muse-lsl.py -a={0}'.format(self.museID), shell=True)
             else:
                 pro = subprocess.Popen('muse-lsl.py', shell=True)
+            programText = 'muse-lsl'
         else:
             if self.museID:
                 subprocess.call('start bluemuse://start?addresses='.format(self.museID), shell=True)
             else:
                 subprocess.call('start bluemuse://start?streamfirst=true'.format(self.museID), shell=True)
+            programText = 'Blue Muse'
+        print('\nThe system will now launch {0} to stream your EEG data.'.format(programText))
         return pro
 
     def stop_stream(self, process):
@@ -310,23 +314,30 @@ If you have done many session this process may take a bit of time.''')
     def begin_collection(self):
         user = self.get_active_user()
         mode = self.get_active_mode()
-        print('''You are ready to start collecting data {0}. In this session you will be presented with {1} automatically generated "password(s)".
-Your task is to simpy type each password as it is presented. If you make a mistake do not worry, just keep typing until you hit the correct key. Take  your time and remember to concentrate!'''.format(user, Constants.SESSION_ITERATIONS))        
-        print('\nThe system will now launch muse-lsl (Linux) or BlueMuse (Windows) to stream  the data.')
-        self.start_stream()
+        print('''You are ready to start a data collection session {0}. 
+\nIn this session you will be presented with {1} automatically generated "password(s)".
+\nYour task is to simpy type each password as it is presented. If you make a mistake do not worry, just keep typing until you hit the correct key. Take  your time and remember to concentrate!'''.format(user, Constants.SESSION_ITERATIONS))        
+        streamProcess = self.start_stream()
         input('\nPress any key to begin...')
-        experiment = DataCollection(user, mode, Constants.SESSION_ITERATIONS)
-        pro = experiment.start()
-        self.stop_stream(pro)
+        datacollection = DataCollection(user, mode, Constants.SESSION_ITERATIONS)
+        datacollection.start()
+        self.stop_stream(streamProcess)
 
     def begin_prediction(self):
         try:
-            user, password = self.get_active_user(), self.get_active_mode()
-            password = self.get_user_password(self.get_active_user(), PasswordTypes(2))
-            print(password)
+            user, mode = self.get_active_user(), self.get_active_mode()
+            password = self.get_user_password(self.get_active_user(), PasswordTypes(mode))
         except configparser.NoOptionError:
-            print('Cannot begin prediction, password not set! User: {0}, Mode: {1}'.format(user, password))
-
+            print('Cannot begin prediction, password not set! User: {0}, Mode: {1}'.format(user, mode))
+            exit(2)
+        print('''You are ready for the prediction {0}. 
+\nIn this session you will simply "login" by entering the password you set earlier.'''.format(user))
+        streamProcess = self.start_stream()
+        input('\nPress any key to begin...')
+        prediction = Prediction(user, mode, password)
+        prediction.start()
+        self.stop_stream(streamProcess)
+        
 if __name__ == '__main__':
     Program()
 

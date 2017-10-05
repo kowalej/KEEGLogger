@@ -74,9 +74,11 @@ class Prediction:
                 self.eegData.append([timestamps[i]] + samples[i])
 
     def check_password(self):
-        passwordInput = str.join(self.input.buffer)
+        passwordInput = ''.join(str(x) for x in self.input.buffer)
         if passwordInput == self.password:
-            return
+            print('correct!')
+        else: print('incorrect!')
+        print(passwordInput)
 
     def draw_static_ui(self):
         fontPassEnt = pygame.font.Font(None, 40)
@@ -96,13 +98,10 @@ class Prediction:
     def process_input(self):
         for event in pygame.event.get():
             if self.state == PredictionState.RUNNING:
-                currentPass = self.passwords[self.currentPassIndex]
-                currentChar = currentPass[self.currentCharIndex]
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_BACKSPACE:
-                        self.input.get_event(event)
-                    elif event.key == pygame.K_RETURN:
+                    if event.key == pygame.K_RETURN:
                         self.check_password()
+                    self.input.get_event(event)
             if event.type == pygame.QUIT: 
                 pygame.quit()
 
@@ -124,7 +123,7 @@ class Prediction:
     def draw(self):
         self.screen.fill((255,255,255))
         self.draw_static_ui()
-        if self.state == DataCollectionState.RUNNING:
+        if self.state == PredictionState.RUNNING:
             self.input.draw(self.screen)
         pygame.display.flip()
     

@@ -2,3 +2,4 @@ configobj
 pygame
 pylsl
 pygatt
+jupyter
