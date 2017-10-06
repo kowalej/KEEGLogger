@@ -2,4 +2,5 @@ configobj
 pygame
 pylsl
 pygatt
+pandas
 jupyter

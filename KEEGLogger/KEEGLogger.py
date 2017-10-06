@@ -53,7 +53,7 @@ class Program:
 
     def startfresh(self):
         parser = argparse.ArgumentParser(description='Runs fresh instance from the start.')
-        parser.add_argument('-mid', '--museid', nargs=1, required=False, help='Muse MAC address.')
+        parser.add_argument('-mid', '--museid', type=str, nargs=1, required=False, help='Muse MAC address.')
         args = parser.parse_args(sys.argv[2:])
         if args.museid:
             self.museID = args.museid
@@ -118,7 +118,7 @@ class Program:
 
     def collect(self):
         parser = argparse.ArgumentParser(description='Collect data for the model. You will type in passwords while your EEG data is recorded.')
-        parser.add_argument('-mid', '--museid', type=int, required=False, help='Muse MAC Address. If ommitted, the first available device is used.')
+        parser.add_argument('-mid', '--museid', type=str, required=False, help='Muse MAC Address. If ommitted, the first available device is used.')
         args = parser.parse_args(sys.argv[2:])
         if args.museid:
             self.museID = args.museid
@@ -128,7 +128,7 @@ class Program:
 
     def predict(self):
         parser = argparse.ArgumentParser(description='You will enter your password and the model will predict it based soley on EEG data.')
-        parser.add_argument('-mid', '--museid', type=int, required=False, help='Muse MAC Address. If ommitted, the first available device is used.')
+        parser.add_argument('-mid', '--museid', type=str, required=False, help='Muse MAC Address. If ommitted, the first available device is used.')
         args = parser.parse_args(sys.argv[2:])
         if args.museid:
             self.museID = args.museid
@@ -292,10 +292,11 @@ If you have done many session this process may take a bit of time.''')
                 pro = subprocess.Popen('muse-lsl.py', shell=True)
             programText = 'muse-lsl'
         else:
+            print(self.museID)
             if self.museID:
-                subprocess.call('start bluemuse://start?addresses='.format(self.museID), shell=True)
+                subprocess.call('start bluemuse://start?addresses={0}'.format(self.museID), shell=True)
             else:
-                subprocess.call('start bluemuse://start?streamfirst=true'.format(self.museID), shell=True)
+                subprocess.call('start bluemuse://start?streamfirst=true', shell=True)
             programText = 'Blue Muse'
         print('\nThe system will now launch {0} to stream your EEG data.'.format(programText))
         return pro
@@ -319,7 +320,7 @@ If you have done many session this process may take a bit of time.''')
 \nYour task is to simpy type each password as it is presented. If you make a mistake do not worry, just keep typing until you hit the correct key. Take  your time and remember to concentrate!'''.format(user, Constants.SESSION_ITERATIONS))        
         streamProcess = self.start_stream()
         input('\nPress any key to begin...')
-        datacollection = DataCollection(user, mode, Constants.SESSION_ITERATIONS)
+        datacollection = DataCollection(user, mode, Constants.SESSION_ITERATIONS, self.museID)
         datacollection.start()
         self.stop_stream(streamProcess)
 

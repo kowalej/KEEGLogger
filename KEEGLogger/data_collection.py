@@ -175,8 +175,8 @@ class DataCollection:
                     if (event.key == ord(currentChar) or event.key == ord(currentChar.lower())) and not self.donePass:
                         newEvent = pygame.event.Event(pygame.KEYDOWN, {'unicode': currentChar.upper(),'key': ord(currentChar.upper()), 'mod': None})
                         self.input.get_event(newEvent)
+                        self.push_marker(float(time()), currentChar)
                         if self.currentCharIndex < len(currentPass) - 1:
-                            self.push_marker(float(time()), currentChar)
                             self.currentCharIndex += 1
                         else: self.donePass = True
                     elif event.key == pygame.K_RETURN and self.donePass:

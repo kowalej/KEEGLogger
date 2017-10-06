@@ -26,6 +26,7 @@
     <Compile Include="constants.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="data_analysis.py" />
     <Compile Include="data_collection.py">
       <SubType>Code</SubType>
     </Compile>
@@ -51,6 +52,7 @@
   <ItemGroup>
     <Content Include="default_config.ini" />
     <Content Include="requirements.txt" />
+    <Content Include="data_analysis_notebook.ipynb" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
