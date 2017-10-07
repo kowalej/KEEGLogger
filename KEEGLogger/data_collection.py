@@ -21,7 +21,7 @@ class DataCollectionState(Enum):
     FINISHED = 2
 
 class DataCollection:
-    def __init__(self, user, mode, iterations, museID = 'Default'):
+    def __init__(self, user, mode, iterations, museID = None):
         self.user = user
         self.museID = museID
         pygame.init()
@@ -58,7 +58,7 @@ class DataCollection:
     def get_eeg_stream(self, timeout):
         eeg_inlet_streams : StreamInlet = resolve_byprop('type', 'EEG', timeout=timeout)
         for stream in eeg_inlet_streams:
-            if self.museID == 'Default' or not stream.name().find(self.museID) == -1:
+            if self.museID == None or not stream.name().find(self.museID) == -1:
                 self.eegInlet = StreamInlet(stream)
                 self.eegTimeCorrection = self.eegInlet.time_correction()
                 self.state = DataCollectionState.RUNNING
@@ -88,14 +88,14 @@ class DataCollection:
             channels = channels.next_sibling()
             channelNames.append(channels.child_value('label'))
                 
-        startTime = datetime.datetime.fromtimestamp(self.startTime).strftime('%Y-%m-%d-%H:%M:%S')
-        finishTime = datetime.datetime.fromtimestamp(self.finishTime).strftime('%Y-%m-%d-%H:%M:%S')
+        startTime = datetime.datetime.fromtimestamp(self.startTime).strftime('%Y-%m-%d-%H-%M-%S')
+        finishTime = datetime.datetime.fromtimestamp(self.finishTime).strftime('%Y-%m-%d-%H-%M-%S')
 
         # Save EEG Data
-        fileBase = os.path.join('session data', self.user, self.mode.name, self.user + '_' + self.mode.name + '_' + startTime + '_' + finishTime).replace(':','\ua789')
+        fileBase = os.path.join('session data', self.user, self.mode.name, self.user + '_' + self.mode.name + '_' + startTime + '_' + finishTime)
         file = fileBase + '_EEG.csv'
         helpers.ensure_dir(file)
-        with open(file, 'w') as csvfile:
+        with open(file, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=',',
                                     quotechar='"', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(['timestamp'] + channelNames)
@@ -107,7 +107,7 @@ class DataCollection:
         file = os.path.join('session data', self.user, self.mode.name, self.user + '_' + self.mode.name + '_' + startTime + '_' + finishTime).replace(':','\ua789')
         file = fileBase + '_MRK.csv'
         helpers.ensure_dir(file)
-        with open(file, 'w') as csvfile:
+        with open(file, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=',',
                                     quotechar='"', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(['timestamp','key marker'])
