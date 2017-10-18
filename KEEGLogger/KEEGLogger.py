@@ -29,6 +29,7 @@ class Program:
     activatemode   Sets the active mode (i.e. password type).
     setpass        Records a new password (note: this is optional and used only for display during prediction).
     collect        Collect data for the model. You will type in passwords while your EEG data is recorded.
+    train          Train the model using all session data.    
     predict        You will enter your password and the model will predict it based soley on EEG data.
 
     Upon first use just run "startfresh" and follow the step by step instructions.
@@ -125,6 +126,11 @@ class Program:
         else:
            self.museID = None
         self.begin_collection()
+
+    def train(self):
+        parser = argparse.ArgumentParser(description='Train the model using all session data.')
+        args = parser.parse_args(sys.argv[2:])
+        #self.begin_training()
 
     def predict(self):
         parser = argparse.ArgumentParser(description='You will enter your password and the model will predict it based soley on EEG data.')
