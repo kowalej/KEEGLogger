@@ -88,14 +88,14 @@ class DataCollection:
             channels = channels.next_sibling()
             channelNames.append(channels.child_value('label'))
                 
-        startTime = datetime.datetime.fromtimestamp(self.startTime).strftime('%Y-%m-%d-%H:%M:%S')
-        finishTime = datetime.datetime.fromtimestamp(self.finishTime).strftime('%Y-%m-%d-%H:%M:%S')
+        startTime = datetime.datetime.fromtimestamp(self.startTime).strftime('%Y-%m-%d-%H-%M-%S')
+        finishTime = datetime.datetime.fromtimestamp(self.finishTime).strftime('%Y-%m-%d-%H-%M-%S')
 
         # Save EEG Data
-        fileBase = os.path.join('session data', self.user, self.mode.name, self.user + '_' + self.mode.name + '_' + startTime + '_' + finishTime).replace(':','\ua789')
+        fileBase = os.path.join('session data', self.user, self.mode.name, self.user + '_' + self.mode.name + '_' + startTime + '_' + finishTime)
         file = fileBase + '_EEG.csv'
         helpers.ensure_dir(file)
-        with open(file, 'w') as csvfile:
+        with open(file, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=',',
                                     quotechar='"', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(['timestamp'] + channelNames)
@@ -107,7 +107,7 @@ class DataCollection:
         file = os.path.join('session data', self.user, self.mode.name, self.user + '_' + self.mode.name + '_' + startTime + '_' + finishTime).replace(':','\ua789')
         file = fileBase + '_MRK.csv'
         helpers.ensure_dir(file)
-        with open(file, 'w') as csvfile:
+        with open(file, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=',',
                                     quotechar='"', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(['timestamp','key marker'])

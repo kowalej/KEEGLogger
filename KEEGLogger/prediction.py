@@ -21,7 +21,7 @@ class PredictionState(Enum):
     FINISHED = 2
 
 class Prediction:
-    def __init__(self, user, mode, password, museID = 'Default'):
+    def __init__(self, user, mode, password, museID = None):
         self.user = user
         self.password = password
         self.museID = museID
@@ -54,7 +54,7 @@ class Prediction:
     def get_eeg_stream(self, timeout):
         eeg_inlet_streams : StreamInlet = resolve_byprop('type', 'EEG', timeout=timeout)
         for stream in eeg_inlet_streams:
-            if self.museID == 'Default' or not stream.name().find(self.museID) == -1:
+            if self.museID == None or not stream.name().find(self.museID) == -1:
                 self.eegInlet = StreamInlet(stream)
                 self.eegTimeCorrection = self.eegInlet.time_correction()
                 self.state = PredictionState.RUNNING
