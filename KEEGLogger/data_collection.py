@@ -62,11 +62,11 @@ class DataCollection:
                 self.eegInlet = StreamInlet(stream)
                 self.eegTimeCorrection = self.eegInlet.time_correction()
                 self.state = DataCollectionState.RUNNING
-        self.doneCheckEEG = True  
+        self.doneCheckEEG = True
 
     def push_marker(self, timestamp, currentChar):
         self.markerOutlet.push_sample(currentChar, timestamp) # Push key marker with timestamp via LSL for other programs.
-        self.markers.append([timestamp, currentChar]) 
+        self.markers.append([timestamp, currentChar])
 
     def pull_eeg_data(self, timeout = 0.0, max_samples = 360):
         samples, timestamps = self.eegInlet.pull_chunk(timeout, max_samples) # Pull samples.
@@ -92,7 +92,7 @@ class DataCollection:
         finishTime = datetime.datetime.fromtimestamp(self.finishTime).strftime('%Y-%m-%d-%H-%M-%S')
 
         # Save EEG Data
-        fileBase = os.path.join('session data', self.user, self.mode.name, self.user + '_' + self.mode.name + '_' + startTime + '_' + finishTime)
+        fileBase = os.path.join('session_data', self.user, self.mode.name, self.user + '_' + self.mode.name + '_' + startTime + '_' + finishTime)
         file = fileBase + '_EEG.csv'
         helpers.ensure_dir(file)
         with open(file, 'w', newline='') as csvfile:
@@ -104,7 +104,7 @@ class DataCollection:
         print('Saved EEG data to: ' + file)
 
         # Save Marker Data
-        file = os.path.join('session data', self.user, self.mode.name, self.user + '_' + self.mode.name + '_' + startTime + '_' + finishTime).replace(':','\ua789')
+        file = os.path.join('session_data', self.user, self.mode.name, self.user + '_' + self.mode.name + '_' + startTime + '_' + finishTime).replace(':','\ua789')
         file = fileBase + '_MRK.csv'
         helpers.ensure_dir(file)
         with open(file, 'w', newline='') as csvfile:
