@@ -290,12 +290,12 @@ If you have done many session this process may take a bit of time.''')
 
     def start_stream(self):
         os = platform.platform()
-        pro = None
+        process = None
         if os == "linux" or os == "linux2":
             if self.museID:
-                pro = subprocess.Popen('muse-lsl.py -a={0}'.format(self.museID), shell=True)
+                process = subprocess.Popen('muse-lsl.py -a={0}'.format(self.museID), shell=True)
             else:
-                pro = subprocess.Popen('muse-lsl.py', shell=True)
+                process = subprocess.Popen('muse-lsl.py', shell=True)
             programText = 'muse-lsl'
         else:
             print(self.museID)
@@ -305,7 +305,7 @@ If you have done many session this process may take a bit of time.''')
                 subprocess.call('start bluemuse://start?streamfirst=true', shell=True)
             programText = 'Blue Muse'
         print('\nThe system will now launch {0} to stream your EEG data.'.format(programText))
-        return pro
+        return process
 
     def stop_stream(self, process):
         os = platform.platform()
