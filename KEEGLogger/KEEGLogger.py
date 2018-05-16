@@ -310,8 +310,8 @@ If you have done many session this process may take a bit of time.''')
     def stop_stream(self, process):
         os = platform.platform()
         if os == "linux" or os == "linux2":
-            if pro:
-                os.killpg(os.getpgid(pro.pid), signal.SIGTERM)
+            if process:
+                os.killpg(os.getpgid(process.pid), signal.SIGTERM)
         else:
             if self.museID:
                 subprocess.call('start bluemuse://stop?addresses='.format(self.museID), shell=True)
