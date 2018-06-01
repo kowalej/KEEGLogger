@@ -4,3 +4,5 @@ pylsl
 pygatt
 pandas
 jupyter
+mne
+glob

@@ -1,6 +1,8 @@
 import os
 import configparser
+import pandas
 from constants import Constants
+from password_types import PasswordTypes
 
 def safe_cast(val, to_type, default=None):
     try:
@@ -42,6 +44,12 @@ def write_config(section, option = None, value = None, cfgFileName = Constants.C
     cfgfile = open(cfgFileName, 'w')
     config.write(cfgfile)
     cfgfile.close()
+
+def load_user_data(username, passwordType, rootFolder = 'session_data', use_legacy = False):
+    if legacy:
+        rootFolder += '/legacy-eeg-timestamps-utc-is-est'
+
+    folder = '{0}/{1}/{2}'.format(rootFolder, username, str(passwordType))
 
 
 
