@@ -8,6 +8,16 @@ est_to_gmt_shift = 3600*1000*4 # 3600 seconds in an hour, 1000 ms in a second, a
 def shift_timezone(timestamp):
     return timestamp + est_to_gmt_shift
 
+def ms_to_sec(timestamp):
+    return timestamp / 1000.
+
+#for filename in glob.iglob('session_data/**/*_EEG.csv', recursive=True):
+#     print('Fixing timestamps (ms -> s) converting: ' + filename)
+
+#     df = pd.read_csv(filename, float_precision='round_trip')
+#     df['timestamp'] = df['timestamp'].apply(ms_to_sec, 1)
+#     df.to_csv(filename, index=False)
+
 #for filename in glob.iglob('session_data/legacy-eeg-timestamps-utc-is-est/*/*/*_EEG.csv', recursive=True):
 #     print('Fixing timestamps converting: ' + filename)
 
