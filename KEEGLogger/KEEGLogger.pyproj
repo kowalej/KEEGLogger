@@ -51,35 +51,34 @@
     <Content Include="requirements.txt" />
     <Content Include="session_data\kowalej\PIN_FIXED_4\kowalej_PIN_FIXED_4_2018-05-15-22-52-59_2018-05-15-22-53-08_EEG.csv" />
     <Content Include="session_data\kowalej\PIN_FIXED_4\kowalej_PIN_FIXED_4_2018-05-15-22-52-59_2018-05-15-22-53-08_MRK.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\dano\PIN_FIXED_4\dano_PIN_FIXED_4_2017-10-17-21-34-53_2017-10-17-21-36-30_EEG.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\dano\PIN_FIXED_4\dano_PIN_FIXED_4_2017-10-17-21-34-53_2017-10-17-21-36-30_MRK.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\dennis\PIN_FIXED_4\dennis_PIN_FIXED_4_2017-10-17-21-55-49_2017-10-17-21-56-56_EEG.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\dennis\PIN_FIXED_4\dennis_PIN_FIXED_4_2017-10-17-21-55-49_2017-10-17-21-56-56_MRK.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\dennis\PIN_FIXED_4\dennis_PIN_FIXED_4_2017-10-17-21-57-38_2017-10-17-21-59-47_EEG.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\dennis\PIN_FIXED_4\dennis_PIN_FIXED_4_2017-10-17-21-57-38_2017-10-17-21-59-47_MRK.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\JOSH\PIN_FIXED_4\JOSH_PIN_FIXED_4_2017-11-08-20-47-23_2017-11-08-20-50-16_EEG.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\JOSH\PIN_FIXED_4\JOSH_PIN_FIXED_4_2017-11-08-20-47-23_2017-11-08-20-50-16_MRK.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\JOSH\PIN_FIXED_4\JOSH_PIN_FIXED_4_2017-11-08-20-51-04_2017-11-08-20-53-50_EEG.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\JOSH\PIN_FIXED_4\JOSH_PIN_FIXED_4_2017-11-08-20-51-04_2017-11-08-20-53-50_MRK.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\TOM\PIN_FIXED_4\TOM_PIN_FIXED_4_2017-11-08-21-32-07_2017-11-08-21-34-14_EEG.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\TOM\PIN_FIXED_4\TOM_PIN_FIXED_4_2017-11-08-21-32-07_2017-11-08-21-34-14_MRK.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\TOM\PIN_FIXED_4\TOM_PIN_FIXED_4_2017-11-08-21-34-47_2017-11-08-21-37-08_EEG.csv" />
-    <Content Include="session_data\legacy-eeg-timestamps-utc-is-est\TOM\PIN_FIXED_4\TOM_PIN_FIXED_4_2017-11-08-21-34-47_2017-11-08-21-37-08_MRK.csv" />
+    <Content Include="session_data\dano\PIN_FIXED_4\dano_PIN_FIXED_4_2017-10-17-21-34-53_2017-10-17-21-36-30_EEG.csv" />
+    <Content Include="session_data\dano\PIN_FIXED_4\dano_PIN_FIXED_4_2017-10-17-21-34-53_2017-10-17-21-36-30_MRK.csv" />
+    <Content Include="session_data\dennis\PIN_FIXED_4\dennis_PIN_FIXED_4_2017-10-17-21-55-49_2017-10-17-21-56-56_EEG.csv" />
+    <Content Include="session_data\dennis\PIN_FIXED_4\dennis_PIN_FIXED_4_2017-10-17-21-55-49_2017-10-17-21-56-56_MRK.csv" />
+    <Content Include="session_data\dennis\PIN_FIXED_4\dennis_PIN_FIXED_4_2017-10-17-21-57-38_2017-10-17-21-59-47_EEG.csv" />
+    <Content Include="session_data\dennis\PIN_FIXED_4\dennis_PIN_FIXED_4_2017-10-17-21-57-38_2017-10-17-21-59-47_MRK.csv" />
+    <Content Include="session_data\JOSH\PIN_FIXED_4\JOSH_PIN_FIXED_4_2017-11-08-20-47-23_2017-11-08-20-50-16_EEG.csv" />
+    <Content Include="session_data\JOSH\PIN_FIXED_4\JOSH_PIN_FIXED_4_2017-11-08-20-47-23_2017-11-08-20-50-16_MRK.csv" />
+    <Content Include="session_data\JOSH\PIN_FIXED_4\JOSH_PIN_FIXED_4_2017-11-08-20-51-04_2017-11-08-20-53-50_EEG.csv" />
+    <Content Include="session_data\JOSH\PIN_FIXED_4\JOSH_PIN_FIXED_4_2017-11-08-20-51-04_2017-11-08-20-53-50_MRK.csv" />
+    <Content Include="session_data\TOM\PIN_FIXED_4\TOM_PIN_FIXED_4_2017-11-08-21-32-07_2017-11-08-21-34-14_EEG.csv" />
+    <Content Include="session_data\TOM\PIN_FIXED_4\TOM_PIN_FIXED_4_2017-11-08-21-32-07_2017-11-08-21-34-14_MRK.csv" />
+    <Content Include="session_data\TOM\PIN_FIXED_4\TOM_PIN_FIXED_4_2017-11-08-21-34-47_2017-11-08-21-37-08_EEG.csv" />
+    <Content Include="session_data\TOM\PIN_FIXED_4\TOM_PIN_FIXED_4_2017-11-08-21-34-47_2017-11-08-21-37-08_MRK.csv" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="notebooks\" />
     <Folder Include="session_data\" />
     <Folder Include="session_data\kowalej\" />
     <Folder Include="session_data\kowalej\PIN_FIXED_4\" />
-    <Folder Include="session_data\legacy-eeg-timestamps-utc-is-est\" />
-    <Folder Include="session_data\legacy-eeg-timestamps-utc-is-est\dano\" />
-    <Folder Include="session_data\legacy-eeg-timestamps-utc-is-est\dano\PIN_FIXED_4\" />
-    <Folder Include="session_data\legacy-eeg-timestamps-utc-is-est\dennis\" />
-    <Folder Include="session_data\legacy-eeg-timestamps-utc-is-est\dennis\PIN_FIXED_4\" />
-    <Folder Include="session_data\legacy-eeg-timestamps-utc-is-est\JOSH\" />
-    <Folder Include="session_data\legacy-eeg-timestamps-utc-is-est\JOSH\PIN_FIXED_4\" />
-    <Folder Include="session_data\legacy-eeg-timestamps-utc-is-est\TOM\" />
-    <Folder Include="session_data\legacy-eeg-timestamps-utc-is-est\TOM\PIN_FIXED_4\" />
+    <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\dano\" />
+    <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\dano\PIN_FIXED_4\" />
+    <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\dennis\" />
+    <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\dennis\PIN_FIXED_4\" />
+    <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\JOSH\" />
+    <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\JOSH\PIN_FIXED_4\" />
+    <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\TOM\" />
+    <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\TOM\PIN_FIXED_4\" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
