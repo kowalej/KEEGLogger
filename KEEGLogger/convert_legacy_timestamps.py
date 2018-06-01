@@ -15,9 +15,9 @@ def shift_timezone(timestamp):
 #     df['timestamp'] = df['timestamp'].apply(shift_timezone, 1)
 #     df.to_csv(filename, index=False)
 
-for filename in glob.iglob('session_data/**/*_MRK.csv', recursive=True):
-     print('Remove extra line: ' + filename)
-     df = pd.read_csv(filename, float_precision='round_trip')
-     df.to_csv(filename, index=False)
+#for filename in glob.iglob('session_data/**/*_MRK.csv', recursive=True):
+#     print('Remove extra line: ' + filename)
+#     df = pd.read_csv(filename, float_precision='round_trip')
+#     df.to_csv(filename, index=False)
 
 c = input('Press any key to exit...')
