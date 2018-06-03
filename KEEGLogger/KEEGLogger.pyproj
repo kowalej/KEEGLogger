@@ -46,6 +46,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="data_test.ipynb" />
     <Content Include="default_config.ini" />
     <Content Include="notebooks\data_analysis_notebook.ipynb" />
     <Content Include="requirements.txt" />
@@ -69,6 +70,12 @@
   <ItemGroup>
     <Folder Include="notebooks\" />
     <Folder Include="session_data\" />
+    <Folder Include="session_data\dano\" />
+    <Folder Include="session_data\dano\PIN_FIXED_4\" />
+    <Folder Include="session_data\dennis\" />
+    <Folder Include="session_data\dennis\PIN_FIXED_4\" />
+    <Folder Include="session_data\JOSH\" />
+    <Folder Include="session_data\JOSH\PIN_FIXED_4\" />
     <Folder Include="session_data\kowalej\" />
     <Folder Include="session_data\kowalej\PIN_FIXED_4\" />
     <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\dano\" />
@@ -79,6 +86,8 @@
     <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\JOSH\PIN_FIXED_4\" />
     <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\TOM\" />
     <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\TOM\PIN_FIXED_4\" />
+    <Folder Include="session_data\TOM\" />
+    <Folder Include="session_data\TOM\PIN_FIXED_4\" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
