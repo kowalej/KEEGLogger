@@ -1,6 +1,9 @@
 import os
 import configparser
-import pandas
+import pandas as pd
+import glob
+import ntpath
+from datetime import datetime
 from constants import Constants
 from password_types import PasswordTypes
 
@@ -45,12 +48,25 @@ def write_config(section, option = None, value = None, cfgFileName = Constants.C
     config.write(cfgfile)
     cfgfile.close()
 
-def load_user_data(username, passwordType, rootFolder = 'session_data', use_legacy = False):
-    if legacy:
-        rootFolder += '/legacy-eeg-timestamps-utc-is-est'
+def load_all_user_data(passwordType, rootFolder = 'session_data', startDateTime = datetime.min, endDateTime = datetime.max):
+    load_user_data('**', passwordType, rootFolder, startDateTime, endDateTime)
 
-    folder = '{0}/{1}/{2}'.format(rootFolder, username, str(passwordType))
-
+def load_user_data(username, passwordType, rootFolder = 'session_data', startDateTime = datetime.min, endDateTime = datetime.max):
+    passwordTypeStr = passwordType.name
+    folder = '{0}/{1}/{2}'.format(rootFolder, username, passwordTypeStr)
+    print(startDateTime)
+    print(endDateTime)
+    for filePath in glob.iglob(folder + '/*_MRK.csv', recursive=False):
+        fileName = ntpath.basename(filePath)
+        timestampsStr = fileName.replace(username + '_' + passwordTypeStr + '_', '').replace('_MRK.csv', '').split('_')
+        timestamps = [datetime.strptime(timestampsStr[0], Constants.SESSION_FILE_DATETIME_FORMAT), datetime.strptime(timestampsStr[1], Constants.SESSION_FILE_DATETIME_FORMAT)]
+        if(timestamps[0] >= startDateTime and timestamps[1] <= endDateTime):
+            print('Found session, Start: {0} - End: {1}'.format(str(timestamps[0]), str(timestamps[1])))
+            mrkFile = filePath
+            eegFile = filePath.replace('_MRK.csv', '_EEG.csv')
+            print(mrkFile, eegFile)
+            dfmrk = pd.read_csv(mrkFile, float_precision='round_trip')
+            dfeeg = pd.read_csv(eegFile, float_precision='round_trip')
 
 
 

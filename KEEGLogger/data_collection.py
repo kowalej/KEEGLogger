@@ -14,6 +14,7 @@ import os
 from pylsl import StreamInfo, StreamOutlet, LostError
 from enum import Enum
 from pylsl import StreamInlet, resolve_byprop
+from constants import Constants
 
 class DataCollectionState(Enum):
     MUSE_DISCONNECTED = 0
@@ -88,8 +89,8 @@ class DataCollection:
             channels = channels.next_sibling()
             channelNames.append(channels.child_value('label'))
                 
-        startTime = datetime.datetime.fromtimestamp(self.startTime).strftime('%Y-%m-%d-%H-%M-%S')
-        finishTime = datetime.datetime.fromtimestamp(self.finishTime).strftime('%Y-%m-%d-%H-%M-%S')
+        startTime = datetime.datetime.fromtimestamp(self.startTime).strftime(Constants.SESSION_FILE_DATETIME_FORMAT)
+        finishTime = datetime.datetime.fromtimestamp(self.finishTime).strftime(Constants.SESSION_FILE_DATETIME_FORMAT)
 
         # Save EEG Data
         fileBase = os.path.join('session_data', self.user, self.mode.name, self.user + '_' + self.mode.name + '_' + startTime + '_' + finishTime)
