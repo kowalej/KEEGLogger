@@ -56,6 +56,7 @@ def load_user_data(username, passwordType, rootFolder = 'session_data', startDat
     folder = '{0}/{1}/{2}'.format(rootFolder, username, passwordTypeStr)
     print(startDateTime)
     print(endDateTime)
+    dfMrk, dfEEG = None
     for filePath in glob.iglob(folder + '/*_MRK.csv', recursive=False):
         fileName = ntpath.basename(filePath)
         timestampsStr = fileName.replace(username + '_' + passwordTypeStr + '_', '').replace('_MRK.csv', '').split('_')
@@ -65,8 +66,8 @@ def load_user_data(username, passwordType, rootFolder = 'session_data', startDat
             mrkFile = filePath
             eegFile = filePath.replace('_MRK.csv', '_EEG.csv')
             print(mrkFile, eegFile)
-            dfmrk = pd.read_csv(mrkFile, float_precision='round_trip')
-            dfeeg = pd.read_csv(eegFile, float_precision='round_trip')
+            dfMrk = pd.read_csv(mrkFile, float_precision='round_trip')
+            dfEEG = pd.read_csv(eegFile, float_precision='round_trip')
 
 
 

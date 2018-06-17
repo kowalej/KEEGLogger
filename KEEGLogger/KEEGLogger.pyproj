@@ -11,7 +11,8 @@
     <OutputPath>.</OutputPath>
     <Name>KEEGLogger</Name>
     <RootNamespace>KEEGLogger</RootNamespace>
-    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>
+    </InterpreterId>
     <IsWindowsApplication>True</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -37,6 +38,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="keeglogger.py" />
+    <Compile Include="musehelper.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="password_types.py" />
     <Compile Include="prediction.py">
       <SubType>Code</SubType>
@@ -88,17 +92,6 @@
     <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\TOM\PIN_FIXED_4\" />
     <Folder Include="session_data\TOM\" />
     <Folder Include="session_data\TOM\PIN_FIXED_4\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Interpreter Include="env\">
-      <Id>env</Id>
-      <Version>3.6</Version>
-      <Description>env (Anaconda 5.0.0)</Description>
-      <InterpreterPath>Scripts\python.exe</InterpreterPath>
-      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
-      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
-      <Architecture>X64</Architecture>
-    </Interpreter>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
