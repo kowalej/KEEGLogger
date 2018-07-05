@@ -11,7 +11,8 @@
     <OutputPath>.</OutputPath>
     <Name>KEEGLogger</Name>
     <RootNamespace>KEEGLogger</RootNamespace>
-    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>
+    </InterpreterId>
     <IsWindowsApplication>True</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -58,16 +59,12 @@
     <Interpreter Include="env\">
       <Id>env</Id>
       <Version>3.6</Version>
-      <Description>env (Anaconda 4.4.0)</Description>
+      <Description>env (Anaconda 5.0.0)</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
       <Architecture>X64</Architecture>
     </Interpreter>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="muse-lsl\" />
-    <Folder Include="muse-lsl\muse\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
