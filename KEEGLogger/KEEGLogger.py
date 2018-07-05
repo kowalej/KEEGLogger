@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 import sys
 import getopt
 import argparse
@@ -11,6 +10,7 @@ import platform
 import subprocess
 import time
 import configparser
+from musehelper import *
 from data_collection import DataCollection
 from password_types import PasswordTypes
 from constants import Constants
@@ -19,8 +19,7 @@ from prediction import Prediction
 class Program:
     def __init__(self):
         helpers.load_default_config()
-        parser = argparse.ArgumentParser(
-            description='KEEGLogger is a demostration of password cracking that uses your brainwave data to infer keystrokes.',
+        parser = argparse.ArgumentParser(description='KEEGLogger is a demostration of password cracking that uses your brainwave data to infer keystrokes.',
             usage='''KEEGLogger.py <command> [<args>]
     These are the commands:
     startfresh     Starts a new instance with step by step instructions.
@@ -289,34 +288,14 @@ If you have done many session this process may take a bit of time.''')
         # Train
 
     def start_stream(self):
-        os = platform.platform()
-        process = None
-        if os == "linux" or os == "linux2":
-            if self.museID:
-                process = subprocess.Popen('muse-lsl.py -a={0}'.format(self.museID), shell=True)
-            else:
-                process = subprocess.Popen('muse-lsl.py', shell=True)
-            programText = 'muse-lsl'
-        else:
-            print(self.museID)
-            if self.museID:
-                subprocess.call('start bluemuse://start?addresses={0}'.format(self.museID), shell=True)
-            else:
-                subprocess.call('start bluemuse://start?streamfirst=true', shell=True)
-            programText = 'Blue Muse'
-        print('\nThe system will now launch {0} to stream your EEG data.'.format(programText))
-        return process
+        print('\nThe system will now use muselsl to stream your EEG data.\n')
 
-    def stop_stream(self, process):
-        os = platform.platform()
-        if os == "linux" or os == "linux2":
-            if process:
-                os.killpg(os.getpgid(process.pid), signal.SIGTERM)
-        else:
-            if self.museID:
-                subprocess.call('start bluemuse://stop?addresses='.format(self.museID), shell=True)
-            else:
-                subprocess.call('start bluemuse://stop?stopall=true'.format(self.museID), shell=True)
+        backend = helper.resolve_backend('auto')
+        muse = stream(self.museID, backend, unmanaged=True)
+        return muse
+
+    def stop_stream(self, muse):
+        muse.stop()
 
     def begin_collection(self):
         user = self.get_active_user()
@@ -324,11 +303,11 @@ If you have done many session this process may take a bit of time.''')
         print('''You are ready to start a data collection session {0}. 
 \nIn this session you will be presented with {1} automatically generated "password(s)".
 \nYour task is to simpy type each password as it is presented. If you make a mistake do not worry, just keep typing until you hit the correct key. Take  your time and remember to concentrate!'''.format(user, Constants.SESSION_ITERATIONS))        
-        streamProcess = self.start_stream()
+        muse = self.start_stream()
         input('\nPress any key to begin...')
         datacollection = DataCollection(user, mode, Constants.SESSION_ITERATIONS, self.museID)
         datacollection.start()
-        self.stop_stream(streamProcess)
+        self.stop_stream(muse)
 
     def begin_prediction(self):
         try:
@@ -339,11 +318,11 @@ If you have done many session this process may take a bit of time.''')
             exit(2)
         print('''You are ready for the prediction {0}. 
 \nIn this session you will simply "login" by entering the password you set earlier.'''.format(user))
-        streamProcess = self.start_stream()
+        muse = self.start_stream()
         input('\nPress any key to begin...')
         prediction = Prediction(user, mode, password)
         prediction.start()
-        self.stop_stream(streamProcess)
+        self.stop_stream(muse)
         
 if __name__ == '__main__':
     Program()
