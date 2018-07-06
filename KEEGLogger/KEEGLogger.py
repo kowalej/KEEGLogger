@@ -10,7 +10,7 @@ import platform
 import subprocess
 import time
 import configparser
-from musehelper import *
+from muse_helper import *
 from data_collection import DataCollection
 from password_types import PasswordTypes
 from constants import Constants

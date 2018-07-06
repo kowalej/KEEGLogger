@@ -37,7 +37,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="keeglogger.py" />
-    <Compile Include="musehelper.py">
+    <Compile Include="muse_helper.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="password_types.py" />
@@ -91,10 +91,6 @@
     <Folder Include="D:\Documents\KEEGLogger\KEEGLogger\KEEGLogger\session_data\TOM\PIN_FIXED_4\" />
     <Folder Include="session_data\TOM\" />
     <Folder Include="session_data\TOM\PIN_FIXED_4\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="muse-lsl\" />
-    <Folder Include="muse-lsl\muse\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
